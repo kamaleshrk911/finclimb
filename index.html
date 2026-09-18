@@ -182,7 +182,7 @@ function hint(){
  const L=levels[level],v=values();
  const idx=v.findIndex(x=>!x);
  if(idx<0){showMsg("All answers are filled. Use Check.");return}
- // Provide first letter of the expected word.
+ //ganesh  Provide first letter of the expected word.
  const expected=L.words[idx];
  let first=expected!=="?"?expected[0]:"";
  // For missing ladder entries, derive a helpful generic clue from the clue text.
