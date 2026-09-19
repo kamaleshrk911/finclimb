@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FinClimb — FinTech Word Ladder</title>
+<title>FinClimb — FinTech Crossclimb</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f6f8;color:#17212b}
@@ -13,35 +13,61 @@ header{background:#0a66c2;color:white;padding:18px 28px;display:flex;align-items
 .logo{font-size:25px;font-weight:800}.tag{font-size:13px;opacity:.9}
 .stats{display:flex;gap:12px;flex-wrap:wrap}
 .stat{background:#eef6ff;border-radius:10px;padding:9px 14px;text-align:center;min-width:90px}
-.stat b{display:block;font-size:18px;color:#0a66c2}.stat span{font-size:11px;color:#667}
+.stat b{display:block;font-size:18px;color:#0a66c2}.stat span{font-size:11px;color:#5d6b76}
 main{padding:28px}
 .hero{text-align:center;margin-bottom:20px}
-.hero h1{margin:0 0 7px;font-size:32px}.hero p{margin:0;color:#65727d}
-.panel{border:1px solid #dfe5e9;border-radius:16px;padding:22px;box-shadow:0 4px 18px #00000008}
-.toprow{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
-.level{font-weight:800;color:#0a66c2}.timer{font-weight:800}
-.ladder{display:flex;flex-direction:column;gap:9px;max-width:520px;margin:20px auto}
-.rung{display:flex;align-items:center;gap:10px}
-.rung .num{width:28px;text-align:center;color:#8996a0;font-weight:bold}
-.word{flex:1;height:52px;border:2px solid #cbd5dc;border-radius:10px;text-align:center;font-size:23px;font-weight:800;letter-spacing:4px;text-transform:uppercase;background:white}
+.hero h1{margin:0 0 7px;font-size:32px}.hero p{margin:0;color:#65727d;line-height:1.5}
+.panel{border:1px solid #dfe5e9;border-radius:16px;padding:22px;box-shadow:0 4px 18px #00000008;margin-top:18px}
+.toprow{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:8px;flex-wrap:wrap}
+.level{font-weight:800;color:#0a66c2;font-size:18px}
+.progress{font-weight:700;color:#43515c;font-size:14px}
+.bar{height:6px;background:#e6edf2;border-radius:99px;overflow:hidden;margin-bottom:14px}
+.bar i{display:block;height:100%;width:0;background:#16803c;transition:width .25s}
+
+.ladder{display:flex;flex-direction:column;gap:12px;margin:8px auto 0}
+.rung{display:grid;grid-template-columns:28px minmax(150px,230px) 1fr;gap:12px;align-items:center;padding:6px 8px;border-radius:12px}
+.rung:focus-within{background:#f5f9fd}
+.rung .num{text-align:center;color:#8996a0;font-weight:bold}
+.rung:focus-within .num{color:#0a66c2}
+.word{width:100%;height:52px;border:2px solid #cbd5dc;border-radius:10px;text-align:center;font-size:23px;font-weight:800;letter-spacing:4px;text-transform:uppercase;background:white;color:#17212b}
+.word::placeholder{color:#c3ccd3;letter-spacing:4px}
 .word:focus{outline:none;border-color:#0a66c2;box-shadow:0 0 0 3px #0a66c222}
-.word.fixed{background:#f1f8ff;border-color:#0a66c2;color:#0a66c2}
-.clues{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
-.clue{padding:14px;border:1px solid #e0e6ea;border-radius:12px;background:#fafcfd}
-.clue strong{color:#0a66c2}.clue p{margin:7px 0 0;line-height:1.4}
-.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+.rung.hinted:not(.solved) .word{border-color:#d98a06;background:#fffaf0}
+.rung.solved .word{background:#eaf7ef;border-color:#16803c;color:#16803c}
+.rung.wrong .word{border-color:#b42318;background:#fff1f0;animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.clue .len{font-size:12px;font-weight:700;color:#0a66c2}
+.clue p{margin:2px 0 0;line-height:1.4}
+.delta{font-size:12px;color:#16803c;font-weight:700;min-height:0;margin-top:2px}
+
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:22px}
 button{border:0;border-radius:9px;padding:11px 18px;cursor:pointer;font-weight:700}
-.primary{background:#0a66c2;color:white}.secondary{background:#eef2f5;color:#26333d}.danger{background:#ffe8e8;color:#b42318}
+button:focus-visible{outline:3px solid #0a66c266;outline-offset:2px}
+.primary{background:#0a66c2;color:white}.secondary{background:#eef2f5;color:#26333d}
 button:hover{filter:brightness(.96)}
-.message{text-align:center;min-height:25px;margin-top:14px;font-weight:700}
-.good{color:#16803c}.bad{color:#b42318}
-.explain{display:none;margin-top:18px;padding:16px;border-radius:12px;background:#f0f8f3;border-left:4px solid #16803c}
-.explain h3{margin:0 0 7px}.explain p{margin:5px 0;color:#43515c}
+button:disabled{opacity:.5;cursor:not-allowed}
+.message{text-align:center;min-height:25px;margin-top:14px;font-weight:700;line-height:1.4}
+.good{color:#16803c}.bad{color:#b42318}.info{color:#8a5a00}
+
+.rules{background:#f7fafc;border:1px solid #e0e6ea;border-radius:12px;padding:14px 18px;margin-top:18px;color:#43515c;font-size:14px;line-height:1.5}
+.rules b{color:#17212b}
+.rules ol{margin:6px 0 0;padding-left:20px}
+
 .modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:20px}
 .modalbox{background:white;border-radius:18px;padding:28px;max-width:470px;width:100%;text-align:center}
-.modalbox h2{margin-top:0;color:#0a66c2}.bigscore{font-size:42px;font-weight:900;margin:15px}
+.modalbox h2{margin-top:0;color:#0a66c2}
+.bigscore{font-size:42px;font-weight:900;margin:15px}
+.path{font-weight:800;letter-spacing:1px;color:#16803c;margin:0 0 10px;line-height:1.6}
+.modalbox p{line-height:1.5;color:#43515c}
 footer{text-align:center;color:#8a969f;padding:20px;font-size:12px}
-@media(max-width:700px){main{padding:17px}.clues{grid-template-columns:1fr}.hero h1{font-size:26px}.stats{gap:5px}.stat{min-width:72px;padding:7px}.word{font-size:19px}}
+
+@media(max-width:700px){
+ main{padding:17px}.hero h1{font-size:26px}.stats{gap:5px}.stat{min-width:72px;padding:7px}
+ .word{font-size:20px}
+ .rung{grid-template-columns:24px 1fr;gap:6px 10px}
+ .rung .clue{grid-column:2}
+}
+@media(prefers-reduced-motion:reduce){.rung.wrong .word{animation:none}.bar i{transition:none}}
 </style>
 </head>
 <body>
@@ -53,155 +79,368 @@ footer{text-align:center;color:#8a969f;padding:20px;font-size:12px}
 
 <main>
 <section class="hero">
-<h1>FinTech Word Ladder</h1>
-<p>Solve the clues and change <b>one letter at a time</b> to climb the ladder.</p>
+<h1>FinTech Crossclimb</h1>
+<p>Answer each clue. Every word differs from the word above and below it by <b>exactly one letter</b>.</p>
 </section>
 
 <div class="stats">
 <div class="stat"><b id="score">0</b><span>Score</span></div>
-<div class="stat"><b id="lives">❤️❤️❤️</b><span>Lives</span></div>
-<div class="stat"><b id="streak">0</b><span>Streak</span></div>
+<div class="stat"><b id="streak">0</b><span>No-hint streak</span></div>
+<div class="stat"><b id="hintsLeft">3</b><span>Hints left</span></div>
 <div class="stat"><b id="levelNo">1 / 10</b><span>Level</span></div>
 </div>
 
 <section class="panel">
-<div class="toprow"><div class="level" id="levelTitle">Level 1 — Digital Payments</div><div class="timer">⏱ <span id="time">90</span>s</div></div>
+<div class="toprow"><div class="level" id="levelTitle">Level 1</div><div class="progress" id="progress">0 / 5 rungs</div></div>
+<div class="bar"><i id="barFill"></i></div>
 
 <div class="ladder" id="ladder"></div>
 
-<div class="clues" id="clues"></div>
-
 <div class="actions">
-<button class="secondary" onclick="hint()">💡 Hint</button>
-<button class="secondary" onclick="checkStep()">✓ Check</button>
-<button class="primary" onclick="submitPuzzle()">🚀 Submit Ladder</button>
-<button class="secondary" onclick="resetPuzzle()">↻ Reset</button>
+<button class="secondary" id="hintBtn" onclick="hint()">💡 Hint</button>
+<button class="primary" onclick="checkAll()">✓ Check</button>
+<button class="secondary" onclick="resetPuzzle()">↻ Reset level</button>
 </div>
-<div class="message" id="message"></div>
-<div class="explain" id="explain"></div>
+<div class="message" id="message" role="status" aria-live="polite"></div>
+</section>
+
+<section class="rules">
+<b>How to play</b>
+<ol>
+<li>Type the answer to a clue. A correct word locks in automatically.</li>
+<li>Use the one-letter rule: neighbouring words differ in exactly one position, so a solved word helps you find its neighbours.</li>
+<li>Stuck? A hint reveals one letter (−50 points, 3 per level). Each wrong Check costs 10 points.</li>
+</ol>
 </section>
 </main>
-<footer>FinClimb • A browser-based FinTech learning game • Built with HTML, CSS & JavaScript</footer>
+<footer>FinClimb • A browser-based FinTech learning game • Built with HTML, CSS &amp; JavaScript</footer>
 </div>
 
 <div class="modal" id="modal">
 <div class="modalbox">
 <h2 id="modalTitle">Level Complete!</h2>
 <div class="bigscore" id="modalScore">+500</div>
+<div class="path" id="modalPath"></div>
 <p id="modalText"></p>
-<button class="primary" onclick="nextLevel()">Next Level →</button>
+<button class="primary" id="modalBtn" onclick="nextLevel()">Next level</button>
 </div>
 </div>
 
 <script>
 const levels=[
-{title:"Digital Payments",words:["CASH","?","?","?","CODE"],answers:["CASH","CASH","CASH","CASH","CODE"],clues:[
-"Physical money in notes and coins (4).","A payment method using money electronically (4).","A payment instrument used to make a purchase (4).","A security sequence used in digital payments (4).","A sequence used to authenticate a transaction (4)."],explain:"Digital payments combine money, payment instruments and authentication technologies."},
-{title:"Banking Basics",words:["BANK","?","?","?","RISK"],answers:["BANK","BARK","BARK","BASK","RISK"],clues:[
-"A financial institution accepting deposits (4).","A digital financial service can help manage this animal's name? (4).","A word meaning to make a warning sound (4).","To place something in a container (4).","The possibility of financial loss (4)."],explain:"This level teaches the idea of banking and risk, while the ladder mechanic uses ordinary words to create the one-letter challenge."},
-{title:"Investing",words:["FUND","?","?","?","BOND"],answers:["FUND","FIND","BIND","BAND","BOND"],clues:[
-"A pool of money invested in assets (4).","To locate something (4).","To tie or connect (4).","A group or range; also a musical group (4).","A debt security issued by a company or government (4)."],explain:"Investment platforms help users access funds, securities and markets."},
-{title:"Digital Security",words:["SAFE","?","?","?","CODE"],answers:["SAFE","SAME","CAME","CAGE","CODE"],clues:[
-"Protected from unauthorized access (4).","Identical or not different (4).","Past tense of come (4).","A structure used to contain something (4).","A sequence used for authentication (4)."],explain:"Security is central to FinTech. Authentication codes and secure systems help protect financial accounts."},
-{title:"Credit",words:["LOAN","?","?","?","DEBT"],answers:["LOAN","LEAN","BEAN","BEAT","DEBT"],clues:[
-"Money borrowed and repaid over time (4).","To incline or not be upright (4).","A legume often eaten as food (4).","To strike repeatedly or a musical rhythm (4).","Money owed to another party (4)."],explain:"Digital lending platforms use technology for applications, credit assessment, disbursal and repayment."},
-{title:"Blockchain",words:["HASH","?","?","?","COIN"],answers:["HASH","HUSH","RUSH","RICH","COIN"],clues:[
-"A digital fingerprint of data (4).","To be very quiet (4).","To move quickly (4).","Having a lot of wealth (4).","A unit of digital currency (4)."],explain:"Blockchain systems use cryptographic hashes and digital assets to maintain and transfer value."},
-{title:"Insurance Tech",words:["RISK","?","?","?","CLAIM"],answers:["RISK","RISE","RICE","RIDE","CLAIM"],clues:[
-"The possibility of financial loss (4).","To go upward (4).","A common grain (4).","To travel on or in something (4).","A request for payment under an insurance policy (5)."],explain:"InsurTech uses technology and data to improve underwriting, customer service and claims processing."},
-{title:"FinTech AI",words:["DATA","?","?","?","MODEL"],answers:["DATA","DATE","BATE","BITE","MODEL"],clues:[
-"Information collected for analysis (4).","A calendar day (4).","To discuss or argue against a point (4).","To use your teeth on food (4).","A representation used for prediction or analysis (5)."],explain:"AI in FinTech uses data and models for fraud detection, forecasting and automated decision support."},
-{title:"Markets",words:["BULL","?","?","?","BEAR"],answers:["BULL","BELL","BALL","BAIL","BEAR"],clues:[
-"A market with generally rising prices (4).","An object that rings (4).","A round object used in many sports (4).","Money paid to secure release from custody (4).","A market with generally falling prices (4)."],explain:"Market technology connects participants with tradable assets, prices and execution."},
-{title:"FinTech Master",words:["BANK","?","?","?","RISK"],answers:["BANK","BARK","DARK","DARN","RISK"],clues:[
-"A financial institution accepting deposits (4).","The sound a dog makes (4).","Opposite of light (4).","An exclamation expressing annoyance or surprise (4).","The possibility of financial loss (4)."],explain:"FinTech combines financial services and technology across banking, payments, investing, lending and risk."}
+{title:"Payments",
+ words:["CASH","CASE","CARE","CARD","CART"],
+ clues:[
+  "Physical banknotes and coins.",
+  "Dispute ___: the file opened after a chargeback request.",
+  "Customer ___: the team that answers account queries.",
+  "Plastic or virtual instrument used to pay at checkout.",
+  "Online checkout ___ where you review items before paying."],
+ explain:"Payments move value from payer to payee through cash, cards and digital checkouts, with support and dispute handling around them."},
+
+{title:"Everyday Money",
+ words:["HOLD","SOLD","SOLE","SALE","SAVE","SAFE"],
+ clues:[
+  "A temporary ___ a hotel places on your card balance.",
+  "Past tense of executing a sell order.",
+  "___ proprietor: a single-owner business account type.",
+  "Point of ___ (POS): where a card payment is taken.",
+  "Set money aside in a savings account.",
+  "Protected from fraud and unauthorised access."],
+ explain:"Card holds, trades, business account types, POS payments, saving and security are everyday building blocks of retail fintech apps."},
+
+{title:"Lending",
+ words:["LOAN","LOAD","LEAD","LEND","LENT","RENT"],
+ clues:[
+  "Money borrowed and repaid with interest.",
+  "Top up a prepaid card or wallet: ___ funds.",
+  "A prospective borrower in a lender's sales pipeline.",
+  "To advance money to a borrower for a period.",
+  "Past tense of the word directly above.",
+  "Regular payment to a landlord, often made through an app."],
+ explain:"Digital lending covers finding customers (leads), disbursing funds, and collecting repayments such as loan instalments and rent."},
+
+{title:"Markets",
+ words:["BULL","BELL","BELT","BEAT","BEAR"],
+ clues:[
+  "A market where prices are rising and optimism is high.",
+  "The opening ___ at an exchange starts the trading day.",
+  "Tighten your ___: cut spending to protect your savings.",
+  "Outperform: try to ___ the market index.",
+  "A market where prices are falling and pessimism is high."],
+ explain:"Market language, from opening bells to bull and bear phases, describes how prices and sentiment move."},
+
+{title:"Investing",
+ words:["STAKE","SHAKE","SHARE","SHORE","SHORT"],
+ clues:[
+  "Lock up crypto to help secure a network and earn rewards.",
+  "___-out: consolidation that removes weaker startups from a sector.",
+  "One unit of ownership in a listed company.",
+  "Missing word: off-___ account, held with a bank abroad.",
+  "Sell borrowed shares betting the price will fall: go ___."],
+ explain:"Investment platforms give access to shares, staking and short positions, while offshore accounts and industry shake-outs shape the wider landscape."},
+
+{title:"Risk & Return",
+ words:["RISK","RISE","ROSE","LOSE","LOSS"],
+ clues:[
+  "The chance that an investment loses value.",
+  "What share prices do in a rally.",
+  "Past tense of the previous answer: shares ___ 3% after results.",
+  "What an investor may do with capital in a bad trade.",
+  "A negative figure on a profit and loss statement."],
+ explain:"Every return comes with risk. FinTech tools help people measure gains and losses and decide how much risk to take."},
+
+{title:"Core Tech",
+ words:["CORE","CODE","NODE","NOTE","VOTE"],
+ clues:[
+  "___ banking: the central system that processes accounts and transactions.",
+  "Programming ___ that powers apps and smart contracts.",
+  "A computer that stores and relays a copy of a blockchain.",
+  "Promissory ___: a written promise to repay a debt.",
+  "What token holders cast to decide a DAO proposal."],
+ explain:"Modern finance runs on core banking systems, software code and blockchain nodes, while governance votes let communities steer decentralised projects."},
+
+{title:"Banking & Security",
+ words:["LOCK","ROCK","RACK","RANK","BANK"],
+ clues:[
+  "Freeze your card in the app: ___ it instantly.",
+  "___-bottom: the lowest point prices can reach.",
+  "___ up: to build up charges, such as credit card debt.",
+  "Order of priority when creditors claim repayment.",
+  "Licensed institution that holds deposits and makes loans."],
+ explain:"Banks and fintech apps give customers control (like locking a card) while tracking debt, priority of claims and market lows."},
+
+{title:"Crypto & Funds",
+ words:["MINT","MINE","LINE","FINE","FIND","FUND"],
+ clues:[
+  "Create new tokens or NFTs on a blockchain.",
+  "Use computing power to validate blocks and earn crypto.",
+  "Credit ___: a flexible borrowing limit from a lender.",
+  "Penalty for a late payment or a compliance breach.",
+  "Robo-advisors help you ___ suitable investments.",
+  "A pooled investment such as an ETF or mutual ___."],
+ explain:"From minting and mining tokens to credit lines, fees and pooled funds, FinTech blends new digital assets with traditional products."},
+
+{title:"FinTech Master",
+ words:["FORK","FORM","FIRM","FIRE","WIRE"],
+ clues:[
+  "A split in a blockchain's history into two paths.",
+  "KYC application ___ you fill in to open an account.",
+  "A company, such as a fintech startup or investment ___.",
+  "Movement acronym: Financial Independence, Retire Early.",
+  "___ transfer: bank-to-bank money transfer."],
+ explain:"FinTech firms use forms, wires and blockchains to serve customers, from onboarding checks to global transfers and the FIRE savings movement."}
 ];
 
-let level=0, score=0, lives=3, streak=0, time=90, timer=null, usedHint=false;
+const MAX_HINTS=3, HINT_COST=50, CHECK_COST=10;
+let level=0, score=0, streak=0, hintsUsed=0, mistakes=0, active=-1, solved=[], finished=false;
+const $=id=>document.getElementById(id);
 
-function render(){
+function render(focusFirst){
  const L=levels[level];
- document.getElementById("levelTitle").textContent=`Level ${level+1} — ${L.title}`;
- document.getElementById("levelNo").textContent=`${level+1} / ${levels.length}`;
- const ladder=document.getElementById("ladder"); ladder.innerHTML="";
- L.words.forEach((w,i)=>{
-   const row=document.createElement("div"); row.className="rung";
+ solved=L.words.map(()=>false); hintsUsed=0; mistakes=0; active=-1;
+ $("levelTitle").textContent=`Level ${level+1} — ${L.title}`;
+ const ladder=$("ladder"); ladder.innerHTML="";
+ L.words.forEach((ans,i)=>{
+   const row=document.createElement("div"); row.className="rung"; row.id="r"+i;
+
    const n=document.createElement("div"); n.className="num"; n.textContent=i+1;
-   const input=document.createElement("input"); input.className="word";
-   input.maxLength=5; input.id="w"+i; input.autocomplete="off";
-   input.value=(w!=="?" ? w : "");
-   if(w!=="?"){input.readOnly=true;input.classList.add("fixed")}
-   input.addEventListener("input",()=>input.value=input.value.toUpperCase().replace(/[^A-Z]/g,""));
-   row.append(n,input); ladder.append(row);
+
+   const input=document.createElement("input");
+   input.className="word"; input.id="w"+i; input.maxLength=ans.length;
+   input.autocomplete="off"; input.autocapitalize="characters"; input.spellcheck=false;
+   input.placeholder="•".repeat(ans.length);
+   input.setAttribute("aria-label",`Answer ${i+1}, ${ans.length} letters`);
+   input.addEventListener("focus",()=>{active=i});
+   input.addEventListener("input",()=>{
+     input.value=input.value.toUpperCase().replace(/[^A-Z]/g,"");
+     row.classList.remove("wrong");
+     if(input.value===ans) lockRung(i);
+   });
+   input.addEventListener("keydown",e=>onKey(e,i));
+
+   const clue=document.createElement("div"); clue.className="clue";
+   clue.innerHTML=`<span class="len">${ans.length} letters</span><p></p><div class="delta" id="d${i}"></div>`;
+   clue.querySelector("p").textContent=L.clues[i];
+
+   row.append(n,input,clue); ladder.append(row);
  });
- const clues=document.getElementById("clues"); clues.innerHTML="";
- L.clues.forEach((c,i)=>{clues.innerHTML+=`<div class="clue"><strong>${i+1}.</strong><p>${c}</p></div>`});
- document.getElementById("message").textContent="";
- document.getElementById("explain").style.display="none";
- usedHint=false; time=90; updateStats(); startTimer();
+ $("message").textContent=""; $("message").className="message";
+ updateStats();
+ if(focusFirst) $("w0").focus();
 }
 
 function updateStats(){
- document.getElementById("score").textContent=score;
- document.getElementById("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);
- document.getElementById("streak").textContent=streak;
- document.getElementById("time").textContent=time;
+ const total=levels[level].words.length, done=solved.filter(Boolean).length;
+ $("score").textContent=score;
+ $("streak").textContent=streak;
+ $("hintsLeft").textContent=MAX_HINTS-hintsUsed;
+ $("levelNo").textContent=`${level+1} / ${levels.length}`;
+ $("progress").textContent=`${done} / ${total} rungs`;
+ $("barFill").style.width=(done/total*100)+"%";
+ $("hintBtn").disabled=(hintsUsed>=MAX_HINTS)||done===total;
 }
 
-function startTimer(){clearInterval(timer);timer=setInterval(()=>{time--;updateStats();if(time<=0){clearInterval(timer);loseLife("Time's up!");}},1000)}
-function values(){return levels[level].words.map((_,i)=>document.getElementById("w"+i).value.trim().toUpperCase())}
-function diffOne(a,b){if(!a||!b||a.length!==b.length)return false;let d=0;for(let i=0;i<a.length;i++)if(a[i]!==b[i])d++;return d===1}
-function showMsg(t,good=false){const m=document.getElementById("message");m.textContent=t;m.className="message "+(good?"good":"bad")}
-function checkStep(){
- const v=values(); let missing=v.findIndex(x=>!x);
- if(missing>=0){showMsg(`Enter answer ${missing+1}.`);return}
- let bad=-1;for(let i=0;i<v.length-1;i++){if(!diffOne(v[i],v[i+1])){bad=i;break}}
- if(bad>=0)showMsg(`Words ${bad+1} and ${bad+2} must differ by exactly ONE letter.`);
- else showMsg("Perfect ladder! Now submit it.",true);
+function diffOne(a,b){
+ if(!a||!b||a.length!==b.length) return false;
+ let d=0; for(let i=0;i<a.length;i++) if(a[i]!==b[i]) d++;
+ return d===1;
 }
-function submitPuzzle(){
- const v=values(); let missing=v.findIndex(x=>!x);
- if(missing>=0){showMsg(`Complete all ${v.length} words first.`);return}
- const valid=v.every((x,i)=>x===levels[level].answers[i]) && v.every((x,i)=>i===0||diffOne(v[i-1],x));
- if(!valid){loseLife("The ladder connection is incorrect. Check the one-letter rule.");return}
- clearInterval(timer);
- let points=500+(time*5)+(usedHint?-100:0);
- score+=Math.max(100,points);streak++;updateStats();
- document.getElementById("modalTitle").textContent="Level Complete! 🎉";
- document.getElementById("modalScore").textContent="+"+Math.max(100,points);
- document.getElementById("modalText").textContent=levels[level].explain;
- document.getElementById("modal").style.display="flex";
+function showMsg(t,type){const m=$("message");m.textContent=t;m.className="message "+(type||"bad")}
+
+/* A rung is locked when its answer is correct. */
+function lockRung(i){
+ if(solved[i]) return;
+ const L=levels[level], input=$("w"+i), row=$("r"+i);
+ input.value=L.words[i]; input.readOnly=true; input.dataset.pen="";
+ row.classList.remove("wrong"); row.classList.add("solved");
+ solved[i]=true;
+ updateDelta(i); updateDelta(i+1);
+ updateStats();
+ if(active===i) focusRung(i+1,1,true);
+ if(solved.every(Boolean)){ completeLevel(); }
+ else showMsg(`Correct! ${solved.filter(Boolean).length} of ${L.words.length} rungs locked.`,"good");
 }
-function loseLife(msg){
- lives--;streak=0;updateStats();showMsg(msg);
- if(lives<=0){clearInterval(timer);setTimeout(()=>{alert("Game Over! Your score: "+score);location.reload()},500)}
+
+/* Shows which letter changed, once both neighbouring rungs are locked. */
+function updateDelta(i){
+ const L=levels[level], el=$("d"+i);
+ if(!el||!solved[i]) return;
+ if(i===0){el.textContent="Starting word";return}
+ if(!solved[i-1]) return;
+ const a=L.words[i-1], b=L.words[i];
+ for(let k=0;k<b.length;k++) if(a[k]!==b[k]){el.textContent=`Letter ${k+1} changed: ${a[k]} → ${b[k]}`;break}
 }
-function hint(){
- if(usedHint){showMsg("Hint already used on this level.");return}
- usedHint=true;
- const L=levels[level],v=values();
- const idx=v.findIndex(x=>!x);
- if(idx<0){showMsg("All answers are filled. Use Check.");return}
- //ganesh  Provide first letter of the expected word.
- const expected=L.words[idx];
- let first=expected!=="?"?expected[0]:"";
- // For missing ladder entries, derive a helpful generic clue from the clue text.
- showMsg(`Hint: Answer ${idx+1} starts with "${first}". −100 points.`,true);
+
+function markWrong(i){
+ const input=$("w"+i), row=$("r"+i);
+ row.classList.remove("wrong"); void row.offsetWidth; row.classList.add("wrong");
+ if(input.dataset.pen!==input.value){input.dataset.pen=input.value;mistakes++}
 }
-function resetPuzzle(){render()}
-function nextLevel(){
- document.getElementById("modal").style.display="none";
- if(level<levels.length-1){level++;lives=3;render()}
- else{
-   document.getElementById("modalTitle").textContent="🏆 FinTech Master!";
-   document.getElementById("modalScore").textContent=score;
-   document.getElementById("modalText").textContent="You completed every FinClimb level. You are ready for the next financial challenge!";
-   document.querySelector("#modal button").textContent="Play Again";
-   document.querySelector("#modal button").onclick=()=>location.reload();
-   document.getElementById("modal").style.display="flex";
+
+/* Move focus to the next unsolved rung in a direction (optionally wrapping). */
+function focusRung(from,dir,wrap){
+ const n=levels[level].words.length;
+ for(let step=0;step<n;step++){
+   let j=from+dir*step;
+   if(wrap) j=((j%n)+n)%n;
+   if(j<0||j>=n) return false;
+   if(!solved[j]){$("w"+j).focus();return true}
+ }
+ return false;
+}
+
+function onKey(e,i){
+ if(e.key==="Enter"){
+   e.preventDefault();
+   const v=$("w"+i).value, ans=levels[level].words[i];
+   if(!solved[i]&&v){
+     if(v.length<ans.length) showMsg(`Answer ${i+1} needs ${ans.length} letters.`);
+     else if(v!==ans){markWrong(i);showMsg(`"${v}" is not the answer to clue ${i+1}. Re-read the clue.`)}
+   }
+   focusRung(i+1,1,true);
+ } else if(e.key==="ArrowDown"){e.preventDefault();focusRung(i+1,1,false)}
+ else if(e.key==="ArrowUp"){e.preventDefault();focusRung(i-1,-1,false)}
+}
+
+function checkAll(){
+ const L=levels[level], n=L.words.length;
+ let wrong=[], partial=0, filled=0;
+ L.words.forEach((ans,i)=>{
+   if(solved[i]) return;
+   const v=$("w"+i).value; if(!v) return;
+   filled++;
+   if(v.length<ans.length){partial++;return}
+   if(v!==ans) wrong.push(i);
+ });
+ if(filled===0){showMsg("Type at least one answer, then press Check.","info");return}
+ wrong.forEach(markWrong);
+ updateStats();
+
+ // one-letter rule between two full-length typed neighbours
+ let ruleBreak=-1;
+ for(let i=0;i<n-1;i++){
+   const a=$("w"+i).value, b=$("w"+(i+1)).value;
+   if(a.length===L.words[i].length&&b.length===L.words[i+1].length&&!diffOne(a,b)){ruleBreak=i;break}
+ }
+ if(wrong.length){
+   const s=wrong.length>1?"answers are":"answer is";
+   showMsg(`${wrong.length} ${s} not right yet`+(ruleBreak>=0
+     ?`. Words ${ruleBreak+1} and ${ruleBreak+2} must differ by exactly one letter.`
+     :". Re-read the clues and use the one-letter rule."));
+ } else if(partial){
+   showMsg("Everything typed so far is correct. Finish the incomplete words.","good");
+ } else {
+   showMsg("Everything typed so far is correct.","good");
  }
 }
-render();
+
+/* Hint: reveals ONE letter of the rung you are on (or the first unsolved rung). */
+function hint(){
+ if(hintsUsed>=MAX_HINTS){showMsg("No hints left on this level.","info");return}
+ const L=levels[level];
+ let i=(active>=0&&!solved[active])?active:solved.findIndex(s=>!s);
+ if(i<0){showMsg("All rungs are already solved.","info");return}
+ const ans=L.words[i], input=$("w"+i);
+ let v=input.value, pos=0;
+ while(pos<v.length&&v[pos]===ans[pos]) pos++;   // first empty or wrong position
+ input.value=v.slice(0,pos)+ans[pos]+v.slice(pos+1);
+ input.dataset.pen="";
+ $("r"+i).classList.remove("wrong");
+ $("r"+i).classList.add("hinted");
+ hintsUsed++;
+
+ let note=`Hint: letter ${pos+1} of answer ${i+1} is "${ans[pos]}". ${MAX_HINTS-hintsUsed} left, −${HINT_COST} points.`;
+ if(i>0&&solved[i-1]) note+=` It differs from ${L.words[i-1]} by one letter.`;
+ else if(i<L.words.length-1&&solved[i+1]) note+=` It differs from ${L.words[i+1]} by one letter.`;
+
+ if(input.value===ans){ lockRung(i); if(!solved.every(Boolean)) showMsg(note,"info"); }
+ else showMsg(note,"info");
+ updateStats();
+ if(!solved[i]) input.focus();
+}
+
+function completeLevel(){
+ const L=levels[level];
+ const pts=Math.max(100,500-hintsUsed*HINT_COST-mistakes*CHECK_COST);
+ score+=pts;
+ streak=hintsUsed===0?streak+1:0;
+ updateStats();
+ setTimeout(()=>{
+   $("modalTitle").textContent="Level complete! 🎉";
+   $("modalScore").textContent="+"+pts;
+   $("modalPath").textContent=L.words.join(" → ");
+   $("modalText").textContent=L.explain;
+   $("modalBtn").textContent=level<levels.length-1?"Next level":"See final score";
+   $("modal").style.display="flex";
+   $("modalBtn").focus();
+ },500);
+}
+
+function resetPuzzle(){ render(false); }
+
+function nextLevel(){
+ if(finished){ restart(); return; }
+ $("modal").style.display="none";
+ if(level<levels.length-1){ level++; render(true); }
+ else{
+   finished=true;
+   $("modalTitle").textContent="🏆 FinTech Master!";
+   $("modalScore").textContent=score;
+   $("modalPath").textContent="";
+   $("modalText").textContent="You climbed every FinClimb ladder. You are ready for the next financial challenge!";
+   $("modalBtn").textContent="Play again";
+   $("modal").style.display="flex";
+ }
+}
+
+function restart(){
+ $("modal").style.display="none";
+ level=0; score=0; streak=0; finished=false;
+ render(false);
+}
+
+render(false);
 </script>
 </body>
 </html>
